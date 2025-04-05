@@ -45,7 +45,7 @@ def webhook():
 # Set webhook when the app starts
 @app.before_first_request
 def set_webhook():
-    url = os.environ.get("WEBHOOK_URL", "https://your-koyeb-url.koyeb.app/webhook")
+    url = os.environ.get("WEBHOOK_URL", "https://labour-karrah-voidx-ae980523.koyeb.app/webhook")
     telegram_app.bot.delete_webhook()
     telegram_app.bot.set_webhook(url)
 
