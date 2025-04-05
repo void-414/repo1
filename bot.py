@@ -4,52 +4,26 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 import os
 
-# Create Flask app
+TOKEN = os.getenv("7024375117:AAECTpwnoqAbIp4xUT1bZstiSVgBXgSLMh0")
+WEBHOOK_PATH = "/webhook"
+
 app = Flask(__name__)
+bot_app = Application.builder().token(TOKEN).build()
 
-# Get token from environment variable or paste directly
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "7024375117:AAECTpwnoqAbIp4xUT1bZstiSVgBXgSLMh0")
-
-# Create Telegram app instance
-telegram_app = Application.builder().token(BOT_TOKEN).build()
-
-
-# Bot command: /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hi! I'm your Reminder Bot! ⏰ Send /remind <text> to get started.")
+    await update.message.reply_text("Hi! I'm your reminder bot.")
 
+bot_app.add_handler(CommandHandler("start", start))
 
-# Bot command: /remind
-async def remind(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    reminder_text = " ".join(context.args)
-    if reminder_text:
-        await update.message.reply_text(f"✅ Reminder set: {reminder_text}")
-        # (Real logic like storing and triggering reminder would go here)
-    else:
-        await update.message.reply_text("❗ Usage: /remind <what to remind>")
-
-
-# Add handlers
-telegram_app.add_handler(CommandHandler("start", start))
-telegram_app.add_handler(CommandHandler("remind", remind))
-
-
-# Flask route to handle webhook
-@app.route("/webhook", methods=["POST"])
+@app.route(WEBHOOK_PATH, methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(force=True), telegram_app.bot)
-    telegram_app.update_queue.put(update)
+    update = Update.de_json(request.get_json(force=True), bot_app.bot)
+    bot_app.update_queue.put(update)
     return "ok"
 
-
-# Set webhook when the app starts
-@app.before_first_request
-def set_webhook():
-    url = os.environ.get("WEBHOOK_URL", "https://labour-karrah-voidx-ae980523.koyeb.app/webhook")
-    telegram_app.bot.delete_webhook()
-    telegram_app.bot.set_webhook(url)
-
-
-# Run Flask app on port 8080
 if __name__ == "__main__":
-    app.run(port=8080)
+    bot_app.run_webhook(
+        listen="0.0.0.0",
+        port=8080,
+        webhook_url=os.getenv("https://labour-karrah-voidx-ae980523.koyeb.app/webhook") + WEBHOOK_PATH
+    )
