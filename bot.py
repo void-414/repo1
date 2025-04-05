@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 import os
 
-TOKEN = os.getenv("7024375117:AAECTpwnoqAbIp4xUT1bZstiSVgBXgSLMh0")
+TOKEN = os.getenv("")
 WEBHOOK_PATH = "/webhook"
 
 app = Flask(__name__)
@@ -25,5 +25,5 @@ if __name__ == "__main__":
     bot_app.run_webhook(
         listen="0.0.0.0",
         port=8080,
-        webhook_url=os.getenv("https://labour-karrah-voidx-ae980523.koyeb.app/webhook") + WEBHOOK_PATH
+        webhook_url=os.getenv("") + WEBHOOK_PATH
     )
